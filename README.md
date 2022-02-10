@@ -1,14 +1,14 @@
-# Simple Implementation of NeRF (Work In Progress...)
-[![Open NeRF in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YooPaul/NeRF/blob/master/NeRF.ipynb)<br>
+# Implementation of NeRF (Work In Progress...)
+<!--[![Open NeRF in
+Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YooPaul/NeRF/blob/master/NeRF.ipynb)--><br>
 
 ### TODOs
 
-* Conversion to NDC space
-* Optimize pipeline, make better use of batch computation
+* Run the pipeline on the forward facing dataset used by the authors and also experiment with my custom 360 view images   
 
 ### Dataset
 
-I used images of the [South Building](https://colmap.github.io/datasets.html) and their respective estimated camera poses from SfM [2, 3].   
+Currently working with images of custom objects/scenes with their camera poses estimated via SfM [2, 3].   
 
 ## References
 

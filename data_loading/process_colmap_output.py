@@ -72,11 +72,29 @@ def get_rays(colmap_path, extention, images_path, ndc=True):
         t = extrinsics['t']
         camera_origin = - R.T @ t # size (3)
 
+        # we follow OpenGL coordinate convention
+        # where x-axis in camera coordinate space points right
+        # y-axis points up and z-axis points backward
+
+        # since the rotation matrix output from COLMAP follows OpenCV convention
+        # where x-axis in camera coordinate space points right
+        # y-axis points down and z-axis points forward
+        # we need to invert up and forward
         if camera_poses is None:
             # convert to cam to world
             camera_poses =  torch.concat((R.T, (-R.T @ t).reshape(3,1)), dim=-1).unsqueeze(0) # (3, 4)
+            r = camera_poses[:,0:1]
+            u = camera_poses[:,1:2]
+            f = camera_poses[:,2:3]
+            t = camera_poses[:,3:4]
+            camera_poses = torch.concat( (r, -u, -f, t), dim=-1)
         else:
             new_pose = torch.concat((R.T, (-R.T @ t).reshape(3,1)), dim=-1).unsqueeze(0)
+            r = new_pose[:,0:1]
+            u = new_pose[:,1:2]
+            f = new_pose[:,2:3]
+            t = new_pose[:,3:4]
+            new_pose = torch.concat( (r, -u, -f, t), dim=-1)
             camera_poses = torch.concat((camera_poses, new_pose), dim=0)
 
         original_H = intrinsics['H']
