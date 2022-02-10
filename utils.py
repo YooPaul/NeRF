@@ -2,16 +2,19 @@ import torch
 
 def inverse_transform_sampling(X, pdf, n, device=None):
     '''
-    X: (Nc, 1)
+    X: (Batch_size, Nc, 1)
     pdf: (Batch_size, Nc, 1)
     '''
-    X = torch.concat((torch.tensor([0.0], device=device), X.flatten()), dim=0)
-    U = torch.rand(pdf.shape[0], n, device=device) # (*X.shape[:-1], n)
+    X = torch.concat((torch.tensor([0.0], device=device).expand(X.shape[0], 1), X.squeeze(-1)), dim=1) # (Batch_size, Nc + 1)
+    U = torch.rand(pdf.shape[0], n, device=device) # (Batch_size, n)
     cdf = torch.cumsum(pdf.squeeze(-1), -1) # (Batch_size, Nc)
     cdf = torch.cat([torch.zeros_like(cdf[...,:1], device=device), cdf], dim=-1) # (Batch_size, Nc + 1)
 
     inds = torch.searchsorted(cdf, U, right=True)
-    samples = (X[inds] - X[inds - 1]) * torch.rand(pdf.shape[0], n, device=device) + X[inds - 1]
+    #samples = (X[inds] - X[inds - 1]) * torch.rand(pdf.shape[0], n, device=device) + X[inds - 1]
+    samples = torch.zeros(pdf.shape[0], n)
+    for i in range(samples.shape[0]):
+        samples[i] = (X[i,inds[i]] - X[i,inds[i] - 1]) * torch.rand(n, device=device) + X[i,inds[i] - 1]
 
     return samples # (Batch_size, n)
 

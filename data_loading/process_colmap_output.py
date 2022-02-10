@@ -155,13 +155,14 @@ def get_avg_camera_pose(camera_poses):
         Average camera pose 
     '''
 
-    # camera faces the negative forward axis in OpenGL convention
+    # In the conventional camera coordinate system used by OpenGL, 
+    # the forward axis is pointing backwards and up axis points above the camera.
+    # Thus, the up vector is a cross between forward and right. 
     average_forward_axis = F.normalize(torch.mean(camera_poses[:, :, 2], dim=0, keepdim=True)) #.expand((camera_poses.shape[0], 3)) # (N, 3)
     
-    # up axis is pointing below the camera
     average_right_axis = F.normalize(torch.mean(camera_poses[:, :, 0], dim=0, keepdim=True)) #.expand((camera_poses.shape[0], 3)) # (N, 3)
 
-    average_up_axis = torch.cross(average_right_axis, average_forward_axis)
+    average_up_axis = torch.cross(average_forward_axis, average_right_axis)
 
     average_camera_pos = torch.mean(camera_poses[:, :, 3], dim=0, keepdim=True) # (1, 3)
 
@@ -181,7 +182,7 @@ def to_ndc_space(camera_origin, ray_directions, average_c2w, K, near=1,far=10):
     new_ray_dir = torch.bmm(R.unsqueeze(0).expand(ray_directions.shape[0], 3, 3), ray_directions.reshape(-1, 3, 1)).reshape(-1, 3) # (H*W, 3)
 
     # shift origin to the near plane
-    # now there's one origin for each ray direction
+    # now there's a different origin for each ray direction
     tn = -(near + new_origin[2]) / new_ray_dir[:, 2, None] # (HW, 1)
     new_origin = new_origin + tn * new_ray_dir # (H*W, 3)
 
