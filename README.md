@@ -1,6 +1,7 @@
-# Implementation of NeRF (Work In Progress...)
+# PyTorch Implementation of NeRF (Work In Progress...)
 <!--[![Open NeRF in
-Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YooPaul/NeRF/blob/master/NeRF.ipynb)--><br>
+Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YooPaul/NeRF/blob/master/NeRF.ipynb)<br>-->
+Will add a Colab notebook with comments and explanation of the code and model training pipeline. <br>
 
 ### TODOs
 
