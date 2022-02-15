@@ -65,7 +65,7 @@ def train(colmap_path, extention, images_path):
             Cc, weights = integrate_color(Nc, density, color, ts, device)
 
             # Use weights as a PDF(Probability Density Function) to inverse transform sample Nf points
-            weights = F.normalize(weights, dim=1)
+            weights = weights / weights.sum(dim=1, keepdim=True)
 
             new_ts = inverse_transform_sampling(ts, weights, Nf, device) # (Batch_size, Nf)
             new_ts = new_ts.reshape(BATCH_SIZE, Nf,  1) # (Nf, 1)
